@@ -4,6 +4,7 @@ import '../auth/require_signed_in.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_controller.dart';
 import '../widgets/common.dart';
+import 'become_dealer_screen.dart';
 import 'login_screen.dart';
 import 'splash_screen.dart';
 
@@ -26,6 +27,16 @@ class ProfileScreen extends StatelessWidget {
     if (!await ensureSignedIn(context)) return;
     if (!context.mounted) return;
     _toast(context, '$label — coming soon');
+  }
+
+  Future<void> _openBecomeDealer(BuildContext context) async {
+    if (!await ensureSignedIn(context)) return;
+    if (!context.mounted) return;
+    if (authController.currentAccount?.isDealer ?? false) {
+      _toast(context, 'You\'re already a ValleyWheels dealer');
+      return;
+    }
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BecomeDealerScreen()));
   }
 
   @override
@@ -152,31 +163,47 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [c.ink, Color.lerp(c.ink, c.surface2, 0.4)!]),
+              Builder(builder: (_) {
+                final isDealer = authController.currentAccount?.isDealer ?? false;
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                  child: InkWell(
                     borderRadius: BorderRadius.circular(AppRadius.lg),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.storefront_outlined, size: 30, color: c.red),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Become a dealer', style: bodyStyle(size: 14, weight: 800, color: Colors.white)),
-                            Text('List in bulk, get a storefront & priority placement.', style: bodyStyle(size: 11.5, color: Colors.white70)),
-                          ],
-                        ),
+                    onTap: () => _openBecomeDealer(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [c.ink, Color.lerp(c.ink, c.surface2, 0.4)!]),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
                       ),
-                    ],
+                      child: Row(
+                        children: [
+                          Icon(Icons.storefront_outlined, size: 30, color: c.red),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  isDealer ? 'You\'re a ValleyWheels dealer' : 'Become a dealer',
+                                  style: bodyStyle(size: 14, weight: 800, color: Colors.white),
+                                ),
+                                Text(
+                                  isDealer
+                                      ? '${authController.currentAccount!.dealerBusinessName} · ${authController.currentAccount!.dealerCity}'
+                                      : 'List in bulk, get a storefront & priority placement.',
+                                  style: bodyStyle(size: 11.5, color: Colors.white70),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (!isDealer) Icon(Icons.chevron_right_rounded, size: 18, color: Colors.white70),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 18, 30, 4),
                 child: Text(

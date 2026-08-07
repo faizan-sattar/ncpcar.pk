@@ -7,10 +7,39 @@ class Account {
   final UserRole role;
   final bool banned;
   final DateTime joined;
+  final bool isDealer;
+  final String? dealerBusinessName;
+  final String? dealerCity;
+  final String? dealerPhone;
 
-  const Account({required this.email, required this.role, this.banned = false, required this.joined});
+  const Account({
+    required this.email,
+    required this.role,
+    this.banned = false,
+    required this.joined,
+    this.isDealer = false,
+    this.dealerBusinessName,
+    this.dealerCity,
+    this.dealerPhone,
+  });
 
-  Account copyWith({bool? banned}) => Account(email: email, role: role, banned: banned ?? this.banned, joined: joined);
+  Account copyWith({
+    bool? banned,
+    bool? isDealer,
+    String? dealerBusinessName,
+    String? dealerCity,
+    String? dealerPhone,
+  }) =>
+      Account(
+        email: email,
+        role: role,
+        banned: banned ?? this.banned,
+        joined: joined,
+        isDealer: isDealer ?? this.isDealer,
+        dealerBusinessName: dealerBusinessName ?? this.dealerBusinessName,
+        dealerCity: dealerCity ?? this.dealerCity,
+        dealerPhone: dealerPhone ?? this.dealerPhone,
+      );
 }
 
 /// Holds the signed-in user's email and every account created this session
@@ -31,6 +60,7 @@ class AuthController extends ValueNotifier<String?> {
   bool get isSignedIn => value != null;
   UserRole? get currentRole => value != null ? _accounts[value]?.role : null;
   bool get isAdmin => currentRole == UserRole.admin;
+  Account? get currentAccount => value != null ? _accounts[value] : null;
 
   List<Account> get allAccounts => _accounts.values.where((a) => a.role == UserRole.user).toList()
     ..sort((a, b) => b.joined.compareTo(a.joined));
@@ -63,6 +93,21 @@ class AuthController extends ValueNotifier<String?> {
     if (_normalize(email) != adminEmail || password != adminPassword) return false;
     value = adminEmail;
     return true;
+  }
+
+  /// Marks the signed-in user as a dealer with the given storefront details.
+  void registerDealer({required String businessName, required String city, required String phone}) {
+    final email = value;
+    if (email == null) return;
+    final account = _accounts[email];
+    if (account == null) return;
+    _accounts[email] = account.copyWith(
+      isDealer: true,
+      dealerBusinessName: businessName,
+      dealerCity: city,
+      dealerPhone: phone,
+    );
+    notifyListeners();
   }
 
   void setBanned(String email, bool banned) {
