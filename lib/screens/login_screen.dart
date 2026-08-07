@@ -120,8 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         width: 52,
                         height: 52,
-                        decoration: BoxDecoration(color: c.red, shape: BoxShape.circle),
-                        child: const Icon(Icons.verified_rounded, color: Colors.white, size: 28),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(shape: BoxShape.circle),
+                        child: Image.asset('assets/images/logo_circle.png', fit: BoxFit.cover),
                       ),
                       const SizedBox(height: 18),
                       Container(
