@@ -118,8 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 52,
-                        height: 52,
+                        width: 76,
+                        height: 76,
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(shape: BoxShape.circle),
                         child: Image.asset('assets/images/logo_circle.png', fit: BoxFit.cover),

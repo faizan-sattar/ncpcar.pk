@@ -46,7 +46,7 @@ class _AdminShellState extends State<AdminShell> {
         title: Row(
           children: [
             ClipOval(
-              child: Image.asset('assets/images/logo_circle.png', width: 22, height: 22, fit: BoxFit.cover),
+              child: Image.asset('assets/images/logo_circle.png', width: 34, height: 34, fit: BoxFit.cover),
             ),
             const SizedBox(width: 8),
             Text('ValleyWheels Admin', style: bodyStyle(size: 15, weight: 800, color: Colors.white)),
