@@ -28,6 +28,14 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
             child: Row(
               children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: Image.asset('assets/images/logo_circle.png', fit: BoxFit.cover),
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

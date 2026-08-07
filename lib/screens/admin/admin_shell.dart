@@ -45,7 +45,9 @@ class _AdminShellState extends State<AdminShell> {
         titleSpacing: 20,
         title: Row(
           children: [
-            Icon(Icons.admin_panel_settings_outlined, size: 18, color: c.red),
+            ClipOval(
+              child: Image.asset('assets/images/logo_circle.png', width: 22, height: 22, fit: BoxFit.cover),
+            ),
             const SizedBox(width: 8),
             Text('ValleyWheels Admin', style: bodyStyle(size: 15, weight: 800, color: Colors.white)),
           ],
