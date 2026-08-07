@@ -29,8 +29,8 @@ class HomeScreen extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 64,
+                  height: 64,
                   clipBehavior: Clip.antiAlias,
                   decoration: const BoxDecoration(shape: BoxShape.circle),
                   child: Image.asset('assets/images/logo_circle.png', fit: BoxFit.cover),
