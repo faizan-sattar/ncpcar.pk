@@ -9,6 +9,12 @@ import 'car_details_screen.dart';
 import 'filters_screen.dart';
 import 'login_screen.dart';
 
+const _dealers = [
+  ('Al-Fateh Motors', '4.8 ★ · 212 cars'),
+  ('Shahzad Autos', '4.6 ★ · 98 cars'),
+  ('City Car Hub', '4.9 ★ · 156 cars'),
+];
+
 class HomeScreen extends StatelessWidget {
   final ValueChanged<int> onGoToTab;
   const HomeScreen({super.key, required this.onGoToTab});
@@ -164,13 +170,27 @@ class HomeScreen extends StatelessWidget {
                   SectionHeader(title: 'Featured verified cars', actionLabel: 'See all', onAction: () => onGoToTab(1)),
                   SizedBox(
                     height: 250,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: featured.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 14),
-                      itemBuilder: (_, i) => FeaturedCard(car: featured[i], onTap: () => _openDetails(context, featured[i])),
-                    ),
+                    child: context.isWide
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: [
+                                for (var i = 0; i < featured.length; i++) ...[
+                                  if (i > 0) const SizedBox(width: 14),
+                                  Expanded(
+                                    child: FeaturedCard(car: featured[i], width: null, onTap: () => _openDetails(context, featured[i])),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          )
+                        : ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: featured.length,
+                            separatorBuilder: (_, _) => const SizedBox(width: 14),
+                            itemBuilder: (_, i) => FeaturedCard(car: featured[i], onTap: () => _openDetails(context, featured[i])),
+                          ),
                   ),
                   SectionHeader(title: 'Latest listings', actionLabel: 'See all', onAction: () => onGoToTab(1)),
                   GridView.builder(
@@ -188,17 +208,28 @@ class HomeScreen extends StatelessWidget {
           SectionHeader(title: 'Trusted dealers near you'),
           SizedBox(
             height: 122,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: const [
-                _DealerCard(name: 'Al-Fateh Motors', meta: '4.8 ★ · 212 cars'),
-                SizedBox(width: 12),
-                _DealerCard(name: 'Shahzad Autos', meta: '4.6 ★ · 98 cars'),
-                SizedBox(width: 12),
-                _DealerCard(name: 'City Car Hub', meta: '4.9 ★ · 156 cars'),
-              ],
-            ),
+            child: context.isWide
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        for (var i = 0; i < _dealers.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 12),
+                          Expanded(child: _DealerCard(name: _dealers[i].$1, meta: _dealers[i].$2, width: null)),
+                        ],
+                      ],
+                    ),
+                  )
+                : ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    children: [
+                      for (var i = 0; i < _dealers.length; i++) ...[
+                        _DealerCard(name: _dealers[i].$1, meta: _dealers[i].$2),
+                        if (i < _dealers.length - 1) const SizedBox(width: 12),
+                      ],
+                    ],
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 18, 30, 4),
@@ -329,13 +360,14 @@ class _QuickFilterBar extends StatelessWidget {
 class _DealerCard extends StatelessWidget {
   final String name;
   final String meta;
-  const _DealerCard({required this.name, required this.meta});
+  final double? width;
+  const _DealerCard({required this.name, required this.meta, this.width = 132});
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     return Container(
-      width: 132,
+      width: width,
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
       decoration: BoxDecoration(
         color: c.surface,

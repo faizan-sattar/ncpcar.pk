@@ -105,7 +105,8 @@ class _ListingRowCardState extends State<ListingRowCard> {
 class FeaturedCard extends StatelessWidget {
   final CarListing car;
   final VoidCallback onTap;
-  const FeaturedCard({super.key, required this.car, required this.onTap});
+  final double? width;
+  const FeaturedCard({super.key, required this.car, required this.onTap, this.width = 198});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +115,7 @@ class FeaturedCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 198,
+        width: width,
         decoration: BoxDecoration(
           color: c.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
