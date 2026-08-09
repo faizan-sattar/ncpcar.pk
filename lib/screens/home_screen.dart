@@ -145,9 +145,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            final result = await Navigator.of(context).push<CarFilters>(
-                              MaterialPageRoute(builder: (_) => FiltersScreen(initialFilters: activeFilters.value)),
-                            );
+                            final result = await openFiltersPanel(context, activeFilters.value);
                             if (result != null) apply(result);
                           },
                           child: Row(
@@ -380,9 +378,7 @@ class _QuickFilterBar extends StatelessWidget {
   const _QuickFilterBar({required this.onGoToTab});
 
   Future<void> _open(BuildContext context) async {
-    final result = await Navigator.of(context).push<CarFilters>(
-      MaterialPageRoute(builder: (_) => FiltersScreen(initialFilters: activeFilters.value)),
-    );
+    final result = await openFiltersPanel(context, activeFilters.value);
     if (result != null) {
       activeFilters.value = result;
       onGoToTab(1);

@@ -34,9 +34,7 @@ class _BuyScreenState extends State<BuyScreen> {
   }
 
   Future<void> _openFilters() async {
-    final result = await Navigator.of(context).push<CarFilters>(
-      MaterialPageRoute(builder: (_) => FiltersScreen(initialFilters: activeFilters.value)),
-    );
+    final result = await openFiltersPanel(context, activeFilters.value);
     if (result != null) activeFilters.value = result;
   }
 

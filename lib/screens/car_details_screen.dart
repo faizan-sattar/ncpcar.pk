@@ -168,9 +168,9 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                       children: [
                         SpecItem(label: 'Year', value: '${car.year}', mono: true),
                         SpecItem(label: 'Mileage', value: car.mileageLabel, mono: true),
-                        const SpecItem(label: 'Fuel', value: 'Petrol'),
+                        SpecItem(label: 'Fuel', value: car.fuelType),
                         SpecItem(label: 'Transmission', value: car.transmission),
-                        const SpecItem(label: 'Engine', value: '1598 cc', mono: true),
+                        SpecItem(label: 'Owner', value: car.ownerLabel),
                         const SpecItem(label: 'Colour', value: 'Pearl White'),
                       ],
                     ),

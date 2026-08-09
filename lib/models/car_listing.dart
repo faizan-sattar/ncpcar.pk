@@ -14,6 +14,8 @@ class CarListing {
   final bool verified;
   final int plateIndex;
   final String photoCount;
+  final String fuelType;
+  final int ownerCount;
 
   const CarListing({
     required this.id,
@@ -29,6 +31,8 @@ class CarListing {
     required this.verified,
     required this.plateIndex,
     required this.photoCount,
+    this.fuelType = 'Petrol',
+    this.ownerCount = 1,
   });
 
   CarListing copyWith({bool? verified}) => CarListing(
@@ -45,9 +49,16 @@ class CarListing {
         verified: verified ?? this.verified,
         plateIndex: plateIndex,
         photoCount: photoCount,
+        fuelType: fuelType,
+        ownerCount: ownerCount,
       );
 
   String get mileageLabel => '${_km(mileageKm)} km';
+  String get ownerLabel => switch (ownerCount) {
+        1 => '1st owner',
+        2 => '2nd owner',
+        _ => '3rd+ owner',
+      };
   String get specLine => '$year · $mileageLabel · $transmission';
   String get specLineWithCity => '$year · $mileageLabel · $city';
 
@@ -78,6 +89,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 0,
     photoCount: '1/14',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 2,
@@ -93,6 +106,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 1,
     photoCount: '1/10',
+    fuelType: 'Petrol',
+    ownerCount: 2,
   ),
   CarListing(
     id: 3,
@@ -108,6 +123,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 2,
     photoCount: '1/9',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 4,
@@ -123,6 +140,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 3,
     photoCount: '1/16',
+    fuelType: 'Diesel',
+    ownerCount: 1,
   ),
   CarListing(
     id: 5,
@@ -138,6 +157,8 @@ const _initialListings = [
     verified: false,
     plateIndex: 4,
     photoCount: '1/8',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 6,
@@ -153,6 +174,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 5,
     photoCount: '1/11',
+    fuelType: 'Petrol',
+    ownerCount: 3,
   ),
   CarListing(
     id: 7,
@@ -168,6 +191,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 6,
     photoCount: '1/9',
+    fuelType: 'Petrol',
+    ownerCount: 2,
   ),
   CarListing(
     id: 8,
@@ -183,6 +208,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 7,
     photoCount: '1/12',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 9,
@@ -198,6 +225,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 8,
     photoCount: '1/18',
+    fuelType: 'Diesel',
+    ownerCount: 2,
   ),
   CarListing(
     id: 10,
@@ -213,6 +242,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 9,
     photoCount: '1/7',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 11,
@@ -228,6 +259,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 10,
     photoCount: '1/20',
+    fuelType: 'Diesel',
+    ownerCount: 1,
   ),
   CarListing(
     id: 12,
@@ -243,6 +276,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 11,
     photoCount: '1/13',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 13,
@@ -258,6 +293,8 @@ const _initialListings = [
     verified: false,
     plateIndex: 12,
     photoCount: '1/6',
+    fuelType: 'Petrol',
+    ownerCount: 3,
   ),
   CarListing(
     id: 14,
@@ -273,6 +310,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 13,
     photoCount: '1/22',
+    fuelType: 'Diesel',
+    ownerCount: 3,
   ),
   CarListing(
     id: 15,
@@ -288,6 +327,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 14,
     photoCount: '1/10',
+    fuelType: 'Petrol',
+    ownerCount: 1,
   ),
   CarListing(
     id: 16,
@@ -303,6 +344,8 @@ const _initialListings = [
     verified: true,
     plateIndex: 15,
     photoCount: '1/15',
+    fuelType: 'Hybrid',
+    ownerCount: 2,
   ),
 ];
 
@@ -343,6 +386,8 @@ extension _WithId on CarListing {
         verified: verified,
         plateIndex: plateIndex,
         photoCount: photoCount,
+        fuelType: fuelType,
+        ownerCount: ownerCount,
       );
 }
 

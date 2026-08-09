@@ -7,9 +7,13 @@ import '../widgets/common.dart';
 const kAllCities = 'All cities';
 const kAllBodyTypes = 'All types';
 const kAllTransmissions = 'All transmissions';
+const kAllFuelTypes = 'All fuel types';
+const kAllOwners = 'Any owners';
 const kCityOptions = [kAllCities, 'Gilgit', 'Skardu', 'Hunza', 'Lahore', 'Karachi', 'Islamabad'];
 const kBodyTypeOptions = [kAllBodyTypes, 'Sedan', 'Hatchback', 'SUV', 'Crossover'];
 const kTransmissionOptions = [kAllTransmissions, 'Automatic', 'Manual'];
+const kFuelTypeOptions = [kAllFuelTypes, 'Petrol', 'Diesel', 'Hybrid'];
+const kOwnerOptions = [kAllOwners, '1st owner', '2nd owner', '3rd+ owner'];
 const kMinPriceLac = 0.0;
 const kMaxPriceLac = 150.0;
 const kMinYear = 2005;
@@ -27,6 +31,8 @@ class CarFilters {
   final String city;
   final String bodyType;
   final String transmission;
+  final String fuelType;
+  final String owner;
   final bool verifiedOnly;
   final bool dealerOnly;
 
@@ -37,6 +43,8 @@ class CarFilters {
     this.city = kAllCities,
     this.bodyType = kAllBodyTypes,
     this.transmission = kAllTransmissions,
+    this.fuelType = kAllFuelTypes,
+    this.owner = kAllOwners,
     this.verifiedOnly = false,
     this.dealerOnly = false,
   });
@@ -52,6 +60,8 @@ class CarFilters {
     if (city != kAllCities && car.city != city) return false;
     if (bodyType != kAllBodyTypes && car.bodyType != bodyType) return false;
     if (transmission != kAllTransmissions && car.transmission != transmission) return false;
+    if (fuelType != kAllFuelTypes && car.fuelType != fuelType) return false;
+    if (owner != kAllOwners && car.ownerLabel != owner) return false;
     if (verifiedOnly && !car.verified) return false;
     if (dealerOnly && !car.isDealer) return false;
     return true;
@@ -69,6 +79,8 @@ class CarFilters {
         if (city != kAllCities) city,
         if (bodyType != kAllBodyTypes) bodyType,
         if (transmission != kAllTransmissions) transmission,
+        if (fuelType != kAllFuelTypes) fuelType,
+        if (owner != kAllOwners) owner,
         if (verifiedOnly) 'Verified only',
         if (dealerOnly) 'Dealer only',
       ];
@@ -80,6 +92,8 @@ class CarFilters {
     String? city,
     String? bodyType,
     String? transmission,
+    String? fuelType,
+    String? owner,
     bool? verifiedOnly,
     bool? dealerOnly,
   }) =>
@@ -90,6 +104,8 @@ class CarFilters {
         city: city ?? this.city,
         bodyType: bodyType ?? this.bodyType,
         transmission: transmission ?? this.transmission,
+        fuelType: fuelType ?? this.fuelType,
+        owner: owner ?? this.owner,
         verifiedOnly: verifiedOnly ?? this.verifiedOnly,
         dealerOnly: dealerOnly ?? this.dealerOnly,
       );
@@ -103,18 +119,68 @@ class CarFilters {
       other.city == city &&
       other.bodyType == bodyType &&
       other.transmission == transmission &&
+      other.fuelType == fuelType &&
+      other.owner == owner &&
       other.verifiedOnly == verifiedOnly &&
       other.dealerOnly == dealerOnly;
 
   @override
-  int get hashCode =>
-      Object.hash(priceLacRange, yearRange, mileageKmRange, city, bodyType, transmission, verifiedOnly, dealerOnly);
+  int get hashCode => Object.hash(
+        priceLacRange,
+        yearRange,
+        mileageKmRange,
+        city,
+        bodyType,
+        transmission,
+        fuelType,
+        owner,
+        verifiedOnly,
+        dealerOnly,
+      );
 }
 
 /// The filter criteria currently applied across the app — set from the Buy
 /// screen's own filter button or from the dashboard's quick-filter bar, and
 /// read by the Buy screen's listings feed either way.
 final activeFilters = ValueNotifier<CarFilters>(const CarFilters());
+
+/// Opens the filters UI. On wide (tablet/desktop) viewports it slides in as a
+/// panel docked to the right edge instead of taking over the whole screen;
+/// on phones it's a full-screen page, since there isn't room for a side panel.
+Future<CarFilters?> openFiltersPanel(BuildContext context, CarFilters initial) {
+  if (!context.isWide) {
+    return Navigator.of(context).push<CarFilters>(
+      MaterialPageRoute(builder: (_) => FiltersScreen(initialFilters: initial)),
+    );
+  }
+  final c = context.colors;
+  return showGeneralDialog<CarFilters>(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: 'Filters',
+    barrierColor: Colors.black.withValues(alpha: 0.4),
+    transitionDuration: const Duration(milliseconds: 240),
+    pageBuilder: (context, _, _) => Align(
+      alignment: Alignment.centerRight,
+      child: Material(
+        color: c.paper,
+        elevation: 8,
+        child: SizedBox(
+          width: 440,
+          height: double.infinity,
+          child: FiltersScreen(initialFilters: initial),
+        ),
+      ),
+    ),
+    transitionBuilder: (context, animation, _, child) {
+      final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+      return SlideTransition(
+        position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(curved),
+        child: child,
+      );
+    },
+  );
+}
 
 class FiltersScreen extends StatefulWidget {
   final CarFilters initialFilters;
@@ -218,6 +284,34 @@ class _FiltersScreenState extends State<FiltersScreen> {
                               label: t,
                               active: t == filters.transmission,
                               onTap: () => setState(() => filters = filters.copyWith(transmission: t)),
+                            ))
+                        .toList(),
+                  ),
+                  const Divider(height: 28),
+                  Text('FUEL TYPE', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 9,
+                    runSpacing: 9,
+                    children: kFuelTypeOptions
+                        .map((f) => AppChip(
+                              label: f,
+                              active: f == filters.fuelType,
+                              onTap: () => setState(() => filters = filters.copyWith(fuelType: f)),
+                            ))
+                        .toList(),
+                  ),
+                  const Divider(height: 28),
+                  Text('OWNERS', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 9,
+                    runSpacing: 9,
+                    children: kOwnerOptions
+                        .map((o) => AppChip(
+                              label: o,
+                              active: o == filters.owner,
+                              onTap: () => setState(() => filters = filters.copyWith(owner: o)),
                             ))
                         .toList(),
                   ),
