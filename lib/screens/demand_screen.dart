@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../auth/require_signed_in.dart';
 import '../theme/app_theme.dart';
-import '../theme/responsive.dart';
 import '../widgets/common.dart';
 
 class DemandScreen extends StatefulWidget {
@@ -19,9 +18,7 @@ class _DemandScreenState extends State<DemandScreen> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return SafeArea(
-      child: ResponsiveContent(
-        maxWidth: 640,
-        child: ListView(
+      child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         children: [
           Text('Request a car', style: bodyStyle(size: 18, weight: 800, color: c.ink)),
@@ -38,19 +35,23 @@ class _DemandScreenState extends State<DemandScreen> {
               Expanded(child: _Field(label: 'Model', hint: 'e.g. Civic')),
             ],
           ),
-          _Field(label: 'Budget range (PKR)', hint: '40 lac – 60 lac', mono: true),
-          _Field(label: 'City', value: 'Gilgit'),
+          Row(
+            children: [
+              Expanded(child: _Field(label: 'Budget range (PKR)', hint: '40 lac – 60 lac', mono: true)),
+              const SizedBox(width: 10),
+              Expanded(child: _Field(label: 'City', value: 'Gilgit')),
+            ],
+          ),
           const SizedBox(height: 6),
           Text('CONDITION PREFERENCE', style: eyebrowStyle(c.ash)),
           const SizedBox(height: 10),
-          GridView.count(
-            crossAxisCount: 2,
+          GridView.builder(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, mainAxisExtent: 46, crossAxisSpacing: 10, mainAxisSpacing: 10),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 2.6,
-            children: conditions.map((cond) {
+            itemCount: conditions.length,
+            itemBuilder: (_, i) {
+              final cond = conditions[i];
               final active = cond == condition;
               return GestureDetector(
                 onTap: () => setState(() => condition = cond),
@@ -64,7 +65,7 @@ class _DemandScreenState extends State<DemandScreen> {
                   child: Text(cond, textAlign: TextAlign.center, style: bodyStyle(size: 12, weight: 700, color: active ? c.redStrong : c.inkSoft)),
                 ),
               );
-            }).toList(),
+            },
           ),
           const SizedBox(height: 14),
           _Field(label: 'Your mobile number', value: '+92 300 1234567', mono: true),
@@ -104,7 +105,6 @@ class _DemandScreenState extends State<DemandScreen> {
             },
           ),
         ],
-        ),
       ),
     );
   }
