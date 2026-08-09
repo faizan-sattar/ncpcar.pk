@@ -100,6 +100,71 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
+          if (context.isWide)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+              child: ValueListenableBuilder<CarFilters>(
+                valueListenable: activeFilters,
+                builder: (context, filters, _) {
+                  void apply(CarFilters next) {
+                    activeFilters.value = next;
+                    onGoToTab(1);
+                  }
+
+                  return Align(
+                    alignment: Alignment.centerRight,
+                    child: Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        _FilterDropdownChip(
+                          label: filters.city == kAllCities ? 'City' : filters.city,
+                          options: kCityOptions,
+                          onSelected: (v) => apply(filters.copyWith(city: v)),
+                        ),
+                        _FilterDropdownChip(
+                          label: filters.bodyType == kAllBodyTypes ? 'Body type' : filters.bodyType,
+                          options: kBodyTypeOptions,
+                          onSelected: (v) => apply(filters.copyWith(bodyType: v)),
+                        ),
+                        _FilterDropdownChip(
+                          label: filters.transmission == kAllTransmissions ? 'Transmission' : filters.transmission,
+                          options: kTransmissionOptions,
+                          onSelected: (v) => apply(filters.copyWith(transmission: v)),
+                        ),
+                        AppChip(
+                          label: 'Verified only',
+                          active: filters.verifiedOnly,
+                          onTap: () => apply(filters.copyWith(verifiedOnly: !filters.verifiedOnly)),
+                        ),
+                        AppChip(
+                          label: 'Dealer only',
+                          active: filters.dealerOnly,
+                          onTap: () => apply(filters.copyWith(dealerOnly: !filters.dealerOnly)),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.of(context).push<CarFilters>(
+                              MaterialPageRoute(builder: (_) => FiltersScreen(initialFilters: activeFilters.value)),
+                            );
+                            if (result != null) apply(result);
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.tune_rounded, size: 16, color: c.red),
+                              const SizedBox(width: 4),
+                              Text('More filters', style: bodyStyle(size: 12.5, weight: 800, color: c.red)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
             child: GestureDetector(
@@ -238,6 +303,38 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FilterDropdownChip extends StatelessWidget {
+  final String label;
+  final List<String> options;
+  final ValueChanged<String> onSelected;
+  const _FilterDropdownChip({required this.label, required this.options, required this.onSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return PopupMenuButton<String>(
+      onSelected: onSelected,
+      itemBuilder: (context) => options.map((o) => PopupMenuItem(value: o, child: Text(o))).toList(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: c.surface2,
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+          border: Border.all(color: c.ashSoft),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(label, style: bodyStyle(size: 12.5, weight: 700, color: c.ink)),
+            const SizedBox(width: 4),
+            Icon(Icons.expand_more_rounded, size: 16, color: c.ash),
+          ],
+        ),
       ),
     );
   }

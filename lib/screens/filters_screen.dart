@@ -6,29 +6,37 @@ import '../widgets/common.dart';
 
 const kAllCities = 'All cities';
 const kAllBodyTypes = 'All types';
+const kAllTransmissions = 'All transmissions';
 const kCityOptions = [kAllCities, 'Gilgit', 'Skardu', 'Hunza', 'Lahore', 'Karachi', 'Islamabad'];
 const kBodyTypeOptions = [kAllBodyTypes, 'Sedan', 'Hatchback', 'SUV', 'Crossover'];
+const kTransmissionOptions = [kAllTransmissions, 'Automatic', 'Manual'];
 const kMinPriceLac = 0.0;
 const kMaxPriceLac = 150.0;
 const kMinYear = 2005;
 const kMaxYear = 2026;
 const kMinYearD = 2005.0;
 const kMaxYearD = 2026.0;
+const kMinMileage = 0.0;
+const kMaxMileage = 100000.0;
 
 /// Filter criteria applied to the listings feed on the Buy screen.
 class CarFilters {
   final RangeValues priceLacRange;
   final RangeValues yearRange;
+  final RangeValues mileageKmRange;
   final String city;
   final String bodyType;
+  final String transmission;
   final bool verifiedOnly;
   final bool dealerOnly;
 
   const CarFilters({
     this.priceLacRange = const RangeValues(kMinPriceLac, kMaxPriceLac),
     this.yearRange = const RangeValues(kMinYearD, kMaxYearD),
+    this.mileageKmRange = const RangeValues(kMinMileage, kMaxMileage),
     this.city = kAllCities,
     this.bodyType = kAllBodyTypes,
+    this.transmission = kAllTransmissions,
     this.verifiedOnly = false,
     this.dealerOnly = false,
   });
@@ -39,8 +47,11 @@ class CarFilters {
     final priceLac = car.priceValue / 100000;
     if (priceLac < priceLacRange.start || priceLac > priceLacRange.end) return false;
     if (car.year < yearRange.start.round() || car.year > yearRange.end.round()) return false;
+    final mileage = car.mileageKm.toDouble();
+    if (mileage < mileageKmRange.start || mileage > mileageKmRange.end) return false;
     if (city != kAllCities && car.city != city) return false;
     if (bodyType != kAllBodyTypes && car.bodyType != bodyType) return false;
+    if (transmission != kAllTransmissions && car.transmission != transmission) return false;
     if (verifiedOnly && !car.verified) return false;
     if (dealerOnly && !car.isDealer) return false;
     return true;
@@ -53,8 +64,11 @@ class CarFilters {
           'Rs ${priceLacRange.start.round()}–${priceLacRange.end.round()} lac',
         if (yearRange.start.round() != kMinYear || yearRange.end.round() != kMaxYear)
           '${yearRange.start.round()}–${yearRange.end.round()}',
+        if (mileageKmRange.start != kMinMileage || mileageKmRange.end != kMaxMileage)
+          '${mileageKmRange.start.round()}–${mileageKmRange.end.round()} km',
         if (city != kAllCities) city,
         if (bodyType != kAllBodyTypes) bodyType,
+        if (transmission != kAllTransmissions) transmission,
         if (verifiedOnly) 'Verified only',
         if (dealerOnly) 'Dealer only',
       ];
@@ -62,16 +76,20 @@ class CarFilters {
   CarFilters copyWith({
     RangeValues? priceLacRange,
     RangeValues? yearRange,
+    RangeValues? mileageKmRange,
     String? city,
     String? bodyType,
+    String? transmission,
     bool? verifiedOnly,
     bool? dealerOnly,
   }) =>
       CarFilters(
         priceLacRange: priceLacRange ?? this.priceLacRange,
         yearRange: yearRange ?? this.yearRange,
+        mileageKmRange: mileageKmRange ?? this.mileageKmRange,
         city: city ?? this.city,
         bodyType: bodyType ?? this.bodyType,
+        transmission: transmission ?? this.transmission,
         verifiedOnly: verifiedOnly ?? this.verifiedOnly,
         dealerOnly: dealerOnly ?? this.dealerOnly,
       );
@@ -81,13 +99,16 @@ class CarFilters {
       other is CarFilters &&
       other.priceLacRange == priceLacRange &&
       other.yearRange == yearRange &&
+      other.mileageKmRange == mileageKmRange &&
       other.city == city &&
       other.bodyType == bodyType &&
+      other.transmission == transmission &&
       other.verifiedOnly == verifiedOnly &&
       other.dealerOnly == dealerOnly;
 
   @override
-  int get hashCode => Object.hash(priceLacRange, yearRange, city, bodyType, verifiedOnly, dealerOnly);
+  int get hashCode =>
+      Object.hash(priceLacRange, yearRange, mileageKmRange, city, bodyType, transmission, verifiedOnly, dealerOnly);
 }
 
 /// The filter criteria currently applied across the app — set from the Buy
@@ -187,6 +208,20 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         .toList(),
                   ),
                   const Divider(height: 28),
+                  Text('TRANSMISSION', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 9,
+                    runSpacing: 9,
+                    children: kTransmissionOptions
+                        .map((t) => AppChip(
+                              label: t,
+                              active: t == filters.transmission,
+                              onTap: () => setState(() => filters = filters.copyWith(transmission: t)),
+                            ))
+                        .toList(),
+                  ),
+                  const Divider(height: 28),
                   Text('YEAR', style: eyebrowStyle(c.ash)),
                   Padding(
                     padding: const EdgeInsets.only(top: 8, bottom: 2),
@@ -212,6 +247,33 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       max: kMaxYear.toDouble(),
                       divisions: kMaxYear - kMinYear,
                       onChanged: (v) => setState(() => filters = filters.copyWith(yearRange: v)),
+                    ),
+                  ),
+                  const Divider(height: 28),
+                  Text('MILEAGE (KM)', style: eyebrowStyle(c.ash)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${filters.mileageKmRange.start.round()} km', style: monoStyle(size: 14, weight: 700, color: c.red)),
+                        Text('${filters.mileageKmRange.end.round()} km', style: monoStyle(size: 14, weight: 700, color: c.red)),
+                      ],
+                    ),
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: c.red,
+                      inactiveTrackColor: c.ashSoft,
+                      thumbColor: c.red,
+                      overlayColor: c.red.withValues(alpha: 0.15),
+                      trackHeight: 4,
+                    ),
+                    child: RangeSlider(
+                      values: filters.mileageKmRange,
+                      min: kMinMileage,
+                      max: kMaxMileage,
+                      onChanged: (v) => setState(() => filters = filters.copyWith(mileageKmRange: v)),
                     ),
                   ),
                   const Divider(height: 28),

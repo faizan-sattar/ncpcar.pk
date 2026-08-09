@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../auth/require_signed_in.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
-import '../theme/responsive.dart';
 import '../widgets/car_plate.dart';
 import '../widgets/common.dart';
 
@@ -52,9 +51,7 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
     return Scaffold(
       backgroundColor: c.paper,
       body: SafeArea(
-        child: ResponsiveContent(
-          maxWidth: 900,
-          child: Column(
+        child: Column(
           children: [
             Expanded(
               child: ListView(
@@ -309,16 +306,13 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
               ),
             ),
           ],
-          ),
         ),
       ),
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(color: c.paper, border: Border(top: BorderSide(color: c.ashSoft))),
         child: SafeArea(
           top: false,
-          child: ResponsiveContent(
-            maxWidth: 900,
-            child: Padding(
+          child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Row(
               children: [
@@ -326,7 +320,6 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                 const SizedBox(width: 10),
                 Expanded(child: PrimaryButton(label: 'Call seller', icon: Icons.call_outlined, onTap: _callSeller)),
               ],
-            ),
             ),
           ),
         ),
