@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../auth/auth_controller.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/responsive.dart';
 import '../../widgets/common.dart';
 
 class AdminUsersScreen extends StatelessWidget {
@@ -12,9 +11,7 @@ class AdminUsersScreen extends StatelessWidget {
     final c = context.colors;
     return SafeArea(
       top: false,
-      child: ResponsiveContent(
-        maxWidth: 900,
-        child: ValueListenableBuilder<String?>(
+      child: ValueListenableBuilder<String?>(
         valueListenable: authController,
         builder: (context, _, _) {
           final users = authController.allAccounts;
@@ -87,7 +84,6 @@ class AdminUsersScreen extends StatelessWidget {
             },
           );
         },
-        ),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
-import '../theme/responsive.dart';
 import '../widgets/common.dart';
 import '../widgets/listing_card.dart';
 import 'car_details_screen.dart';
@@ -44,9 +43,7 @@ class _BuyScreenState extends State<BuyScreen> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return SafeArea(
-      child: ResponsiveContent(
-        maxWidth: 1100,
-        child: ValueListenableBuilder<CarFilters>(
+      child: ValueListenableBuilder<CarFilters>(
         valueListenable: activeFilters,
         builder: (context, filters, _) => Column(
           children: [
@@ -176,7 +173,6 @@ class _BuyScreenState extends State<BuyScreen> {
               ),
             ),
           ],
-        ),
         ),
       ),
     );

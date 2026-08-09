@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/car_listing.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/responsive.dart';
 import '../../widgets/car_plate.dart';
 import '../../widgets/common.dart';
 
@@ -44,9 +43,7 @@ class AdminListingsScreen extends StatelessWidget {
     final c = context.colors;
     return SafeArea(
       top: false,
-      child: ResponsiveContent(
-        maxWidth: 900,
-        child: ValueListenableBuilder<List<CarListing>>(
+      child: ValueListenableBuilder<List<CarListing>>(
         valueListenable: listingsStore,
         builder: (context, listings, _) {
           if (listings.isEmpty) {
@@ -119,7 +116,6 @@ class AdminListingsScreen extends StatelessWidget {
             },
           );
         },
-        ),
       ),
     );
   }

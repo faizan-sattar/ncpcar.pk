@@ -3,7 +3,6 @@ import '../../auth/auth_controller.dart';
 import '../../admin/reports_store.dart';
 import '../../models/car_listing.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/responsive.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   final ValueChanged<int> onGoToTab;
@@ -14,9 +13,7 @@ class AdminDashboardScreen extends StatelessWidget {
     final c = context.colors;
     return SafeArea(
       top: false,
-      child: ResponsiveContent(
-        maxWidth: 900,
-        child: ListView(
+      child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         children: [
           Text('OVERVIEW', style: eyebrowStyle(c.ash)),
@@ -34,75 +31,57 @@ class AdminDashboardScreen extends StatelessWidget {
                     valueListenable: reportsStore,
                     builder: (context, reports, _) {
                       final openReports = reports.where((r) => r.status == ReportStatus.open).length;
-                      return Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _StatTile(
-                                  icon: Icons.people_outline_rounded,
-                                  value: '${users.length}',
-                                  label: 'Registered users',
-                                  onTap: () => onGoToTab(1),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _StatTile(
-                                  icon: Icons.block_rounded,
-                                  value: '$banned',
-                                  label: 'Suspended',
-                                  onTap: () => onGoToTab(1),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _StatTile(
-                                  icon: Icons.directions_car_outlined,
-                                  value: '${listings.length}',
-                                  label: 'Active listings',
-                                  onTap: () => onGoToTab(2),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _StatTile(
-                                  icon: Icons.verified_outlined,
-                                  value: '$verified',
-                                  label: 'Verified cars',
-                                  onTap: () => onGoToTab(2),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _StatTile(
-                                  icon: Icons.flag_outlined,
-                                  value: '$openReports',
-                                  label: 'Open reports',
-                                  highlight: openReports > 0,
-                                  onTap: () => onGoToTab(3),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _StatTile(
-                                  icon: Icons.storefront_outlined,
-                                  value: '${listings.where((c) => c.isDealer).length}',
-                                  label: 'Dealer listings',
-                                  onTap: () => onGoToTab(2),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      final tiles = [
+                        _StatTile(
+                          icon: Icons.people_outline_rounded,
+                          value: '${users.length}',
+                          label: 'Registered users',
+                          onTap: () => onGoToTab(1),
+                        ),
+                        _StatTile(
+                          icon: Icons.block_rounded,
+                          value: '$banned',
+                          label: 'Suspended',
+                          onTap: () => onGoToTab(1),
+                        ),
+                        _StatTile(
+                          icon: Icons.directions_car_outlined,
+                          value: '${listings.length}',
+                          label: 'Active listings',
+                          onTap: () => onGoToTab(2),
+                        ),
+                        _StatTile(
+                          icon: Icons.verified_outlined,
+                          value: '$verified',
+                          label: 'Verified cars',
+                          onTap: () => onGoToTab(2),
+                        ),
+                        _StatTile(
+                          icon: Icons.flag_outlined,
+                          value: '$openReports',
+                          label: 'Open reports',
+                          highlight: openReports > 0,
+                          onTap: () => onGoToTab(3),
+                        ),
+                        _StatTile(
+                          icon: Icons.storefront_outlined,
+                          value: '${listings.where((c) => c.isDealer).length}',
+                          label: 'Dealer listings',
+                          onTap: () => onGoToTab(2),
+                        ),
+                      ];
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 220,
+                          mainAxisExtent: 108,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: tiles.length,
+                        itemBuilder: (_, i) => tiles[i],
                       );
                     },
                   );
@@ -117,7 +96,6 @@ class AdminDashboardScreen extends StatelessWidget {
           _ActionRow(icon: Icons.directions_car_outlined, label: 'Moderate listings', onTap: () => onGoToTab(2)),
           _ActionRow(icon: Icons.flag_outlined, label: 'Review reports', onTap: () => onGoToTab(3)),
         ],
-        ),
       ),
     );
   }

@@ -28,9 +28,7 @@ class HomeScreen extends StatelessWidget {
     final c = context.colors;
 
     return SafeArea(
-      child: ResponsiveContent(
-        maxWidth: 1100,
-        child: ListView(
+      child: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           Padding(
@@ -163,35 +161,35 @@ class HomeScreen extends StatelessWidget {
           ValueListenableBuilder<List<CarListing>>(
             valueListenable: listingsStore,
             builder: (context, listings, _) {
-              final featured = listings.take(3).toList();
-              final latest = listings.skip(3).toList();
+              final featuredCount = context.isWide ? 6 : 3;
+              final featured = listings.take(featuredCount).toList();
+              final latest = listings.skip(featuredCount).toList();
               return Column(
                 children: [
                   SectionHeader(title: 'Featured verified cars', actionLabel: 'See all', onAction: () => onGoToTab(1)),
-                  SizedBox(
-                    height: 250,
-                    child: context.isWide
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                for (var i = 0; i < featured.length; i++) ...[
-                                  if (i > 0) const SizedBox(width: 14),
-                                  Expanded(
-                                    child: FeaturedCard(car: featured[i], width: null, onTap: () => _openDetails(context, featured[i])),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          )
-                        : ListView.separated(
+                  context.isWide
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            gridDelegate:
+                                const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 280, mainAxisExtent: 250, crossAxisSpacing: 14, mainAxisSpacing: 14),
+                            itemCount: featured.length,
+                            itemBuilder: (_, i) => FeaturedCard(car: featured[i], onTap: () => _openDetails(context, featured[i])),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 250,
+                          child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             itemCount: featured.length,
                             separatorBuilder: (_, _) => const SizedBox(width: 14),
                             itemBuilder: (_, i) => FeaturedCard(car: featured[i], onTap: () => _openDetails(context, featured[i])),
                           ),
-                  ),
+                        ),
                   SectionHeader(title: 'Latest listings', actionLabel: 'See all', onAction: () => onGoToTab(1)),
                   GridView.builder(
                     shrinkWrap: true,
@@ -240,7 +238,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
-        ),
       ),
     );
   }
