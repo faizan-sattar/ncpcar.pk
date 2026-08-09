@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 import 'home_shell.dart';
 
@@ -12,7 +13,9 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.paper,
       body: SafeArea(
-        child: Padding(
+        child: ResponsiveContent(
+          maxWidth: 480,
+          child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 34),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -51,6 +54,7 @@ class SplashScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
           ),
         ),
       ),

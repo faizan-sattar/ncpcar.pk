@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 
 enum _PhotoAction { camera, gallery, remove }
@@ -163,7 +164,9 @@ class _SellScreenState extends State<SellScreen> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return SafeArea(
-      child: Column(
+      child: ResponsiveContent(
+        maxWidth: 640,
+        child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
@@ -235,6 +238,7 @@ class _SellScreenState extends State<SellScreen> {
             },
           ),
         ],
+        ),
       ),
     );
   }

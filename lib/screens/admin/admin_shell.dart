@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../auth/auth_controller.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/responsive.dart';
 import '../splash_screen.dart';
 import 'admin_dashboard_screen.dart';
 import 'admin_users_screen.dart';
@@ -57,8 +58,31 @@ class _AdminShellState extends State<AdminShell> {
           const SizedBox(width: 6),
         ],
       ),
-      body: IndexedStack(index: index, children: screens),
-      bottomNavigationBar: _AdminNav(index: index, onTap: goTo),
+      body: context.isWide
+          ? Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: index,
+                  onDestinationSelected: goTo,
+                  backgroundColor: c.surface,
+                  labelType: NavigationRailLabelType.all,
+                  selectedIconTheme: IconThemeData(color: c.red),
+                  selectedLabelTextStyle: bodyStyle(size: 11, weight: 800, color: c.red),
+                  unselectedIconTheme: IconThemeData(color: c.ash),
+                  unselectedLabelTextStyle: bodyStyle(size: 11, weight: 700, color: c.ash),
+                  destinations: const [
+                    NavigationRailDestination(icon: Icon(Icons.dashboard_outlined), label: Text('Dashboard')),
+                    NavigationRailDestination(icon: Icon(Icons.people_outline_rounded), label: Text('Users')),
+                    NavigationRailDestination(icon: Icon(Icons.directions_car_outlined), label: Text('Listings')),
+                    NavigationRailDestination(icon: Icon(Icons.flag_outlined), label: Text('Reports')),
+                  ],
+                ),
+                VerticalDivider(width: 1, color: c.ashSoft),
+                Expanded(child: IndexedStack(index: index, children: screens)),
+              ],
+            )
+          : IndexedStack(index: index, children: screens),
+      bottomNavigationBar: context.isWide ? null : _AdminNav(index: index, onTap: goTo),
     );
   }
 }

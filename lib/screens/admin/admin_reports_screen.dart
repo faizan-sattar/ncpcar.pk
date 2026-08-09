@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../admin/reports_store.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/responsive.dart';
 import '../../widgets/common.dart';
 
 class AdminReportsScreen extends StatelessWidget {
@@ -11,7 +12,9 @@ class AdminReportsScreen extends StatelessWidget {
     final c = context.colors;
     return SafeArea(
       top: false,
-      child: ValueListenableBuilder<List<AdminReport>>(
+      child: ResponsiveContent(
+        maxWidth: 900,
+        child: ValueListenableBuilder<List<AdminReport>>(
         valueListenable: reportsStore,
         builder: (context, reports, _) {
           if (reports.isEmpty) {
@@ -72,6 +75,7 @@ class AdminReportsScreen extends StatelessWidget {
             },
           );
         },
+        ),
       ),
     );
   }

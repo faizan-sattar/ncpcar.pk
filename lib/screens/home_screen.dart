@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../auth/auth_controller.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 import '../widgets/listing_card.dart';
 import 'car_details_screen.dart';
@@ -21,7 +22,9 @@ class HomeScreen extends StatelessWidget {
     final c = context.colors;
 
     return SafeArea(
-      child: ListView(
+      child: ResponsiveContent(
+        maxWidth: 1100,
+        child: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
           Padding(
@@ -170,7 +173,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   SectionHeader(title: 'Latest listings', actionLabel: 'See all', onAction: () => onGoToTab(1)),
-                  ...latest.map((car) => ListingRowCard(car: car, onTap: () => _openDetails(context, car))),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 560, mainAxisExtent: 140),
+                    itemCount: latest.length,
+                    itemBuilder: (_, i) => ListingRowCard(car: latest[i], onTap: () => _openDetails(context, latest[i])),
+                  ),
                 ],
               );
             },
@@ -199,6 +209,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

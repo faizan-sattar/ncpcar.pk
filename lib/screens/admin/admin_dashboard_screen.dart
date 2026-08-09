@@ -3,6 +3,7 @@ import '../../auth/auth_controller.dart';
 import '../../admin/reports_store.dart';
 import '../../models/car_listing.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/responsive.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   final ValueChanged<int> onGoToTab;
@@ -13,7 +14,9 @@ class AdminDashboardScreen extends StatelessWidget {
     final c = context.colors;
     return SafeArea(
       top: false,
-      child: ListView(
+      child: ResponsiveContent(
+        maxWidth: 900,
+        child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         children: [
           Text('OVERVIEW', style: eyebrowStyle(c.ash)),
@@ -114,6 +117,7 @@ class AdminDashboardScreen extends StatelessWidget {
           _ActionRow(icon: Icons.directions_car_outlined, label: 'Moderate listings', onTap: () => onGoToTab(2)),
           _ActionRow(icon: Icons.flag_outlined, label: 'Review reports', onTap: () => onGoToTab(3)),
         ],
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../auth/auth_controller.dart';
 import '../auth/require_signed_in.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../theme/theme_controller.dart';
 import '../widgets/common.dart';
 import 'become_dealer_screen.dart';
@@ -47,7 +48,9 @@ class ProfileScreen extends StatelessWidget {
         valueListenable: authController,
         builder: (context, email, _) {
           final signedIn = email != null;
-          return ListView(
+          return ResponsiveContent(
+            maxWidth: 640,
+            child: ListView(
             padding: const EdgeInsets.only(bottom: 24),
             children: [
               Padding(
@@ -213,6 +216,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
             ],
+            ),
           );
         },
       ),

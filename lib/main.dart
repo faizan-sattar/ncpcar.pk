@@ -22,21 +22,6 @@ class NcpCarApp extends StatelessWidget {
           theme: buildAppTheme(AppColors.light, Brightness.light),
           darkTheme: buildAppTheme(AppColors.dark, Brightness.dark),
           home: const SplashScreen(),
-          builder: (context, child) {
-            // This is a phone-first layout: on wide viewports (desktop/web
-            // testing) keep it at a phone-like width instead of stretching
-            // quick actions, cards and buttons edge-to-edge.
-            final c = context.colors;
-            return ColoredBox(
-              color: c.ink,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 480),
-                  child: child,
-                ),
-              ),
-            );
-          },
         );
       },
     );

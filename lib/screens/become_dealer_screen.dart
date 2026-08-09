@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../auth/auth_controller.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 
 class BecomeDealerScreen extends StatefulWidget {
@@ -57,7 +58,9 @@ class _BecomeDealerScreenState extends State<BecomeDealerScreen> {
     return Scaffold(
       backgroundColor: c.paper,
       body: SafeArea(
-        child: Padding(
+        child: ResponsiveContent(
+          maxWidth: 480,
+          child: Padding(
           padding: const EdgeInsets.fromLTRB(26, 20, 26, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,6 +120,7 @@ class _BecomeDealerScreenState extends State<BecomeDealerScreen> {
                 style: bodyStyle(size: 11, color: c.ash),
               ),
             ],
+          ),
           ),
         ),
       ),

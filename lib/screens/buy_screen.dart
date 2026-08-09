@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 import '../widgets/listing_card.dart';
 import 'car_details_screen.dart';
@@ -43,7 +44,9 @@ class _BuyScreenState extends State<BuyScreen> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return SafeArea(
-      child: ValueListenableBuilder<CarFilters>(
+      child: ResponsiveContent(
+        maxWidth: 1100,
+        child: ValueListenableBuilder<CarFilters>(
         valueListenable: activeFilters,
         builder: (context, filters, _) => Column(
           children: [
@@ -153,8 +156,10 @@ class _BuyScreenState extends State<BuyScreen> {
                       Expanded(
                         child: filtered.isEmpty
                             ? _EmptyState(query: query, filtersActive: !filters.isDefault)
-                            : ListView.builder(
+                            : GridView.builder(
                                 padding: const EdgeInsets.only(top: 6, bottom: 20),
+                                gridDelegate:
+                                    const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 560, mainAxisExtent: 140),
                                 itemCount: filtered.length,
                                 itemBuilder: (context, i) {
                                   final car = filtered[i];
@@ -171,6 +176,7 @@ class _BuyScreenState extends State<BuyScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

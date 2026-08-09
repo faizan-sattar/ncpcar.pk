@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import '../auth/require_signed_in.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import 'home_screen.dart';
 import 'buy_screen.dart';
 import 'sell_screen.dart';
 import 'demand_screen.dart';
 import 'profile_screen.dart';
+
+const _navDestinations = [
+  (Icons.home_rounded, 'Home'),
+  (Icons.search_rounded, 'Buy'),
+  (Icons.add_circle_outline_rounded, 'Sell'),
+  (Icons.my_location_rounded, 'Demand'),
+  (Icons.person_rounded, 'Profile'),
+];
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -41,10 +50,87 @@ class _HomeShellState extends State<HomeShell> {
       const DemandScreen(),
       const ProfileScreen(),
     ];
+    final body = IndexedStack(index: index, children: screens);
+
+    if (context.isWide) {
+      return Scaffold(
+        backgroundColor: c.paper,
+        body: Row(
+          children: [
+            _SideNav(index: index, onTap: goTo),
+            VerticalDivider(width: 1, color: c.ashSoft),
+            Expanded(child: body),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: c.paper,
-      body: IndexedStack(index: index, children: screens),
+      body: body,
       bottomNavigationBar: _BottomNav(index: index, onTap: goTo),
+    );
+  }
+}
+
+class _SideNav extends StatelessWidget {
+  final int index;
+  final ValueChanged<int> onTap;
+  const _SideNav({required this.index, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Container(
+      width: 88,
+      color: c.surface,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          ClipOval(
+            child: Image.asset('assets/images/logo_circle.png', width: 34, height: 34, fit: BoxFit.cover),
+          ),
+          const SizedBox(height: 28),
+          for (var i = 0; i < _navDestinations.length; i++)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 18),
+              child: _SideNavItem(
+                icon: _navDestinations[i].$1,
+                label: _navDestinations[i].$2,
+                active: index == i,
+                onTap: () => onTap(i),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SideNavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+  const _SideNavItem({required this.icon, required this.label, required this.active, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final color = active ? c.red : c.ash;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Column(
+          children: [
+            Icon(icon, size: 22, color: color),
+            const SizedBox(height: 4),
+            Text(label, style: bodyStyle(size: 10, weight: 700, color: color)),
+          ],
+        ),
+      ),
     );
   }
 }

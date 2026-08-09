@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 
 const kAllCities = 'All cities';
@@ -113,7 +114,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return Scaffold(
       backgroundColor: c.paper,
       body: SafeArea(
-        child: Column(
+        child: ResponsiveContent(
+          maxWidth: 560,
+          child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 8),
@@ -244,6 +247,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               ),
             ),
           ],
+          ),
         ),
       ),
     );
