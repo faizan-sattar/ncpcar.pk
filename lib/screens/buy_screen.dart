@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 import '../widgets/listing_card.dart';
 import 'car_details_screen.dart';
@@ -61,7 +62,7 @@ class _BuyScreenState extends State<BuyScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: context.isWide ? 22 : 16, vertical: context.isWide ? 14 : 0),
                       decoration: BoxDecoration(
                         color: c.surface,
                         borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -69,18 +70,18 @@ class _BuyScreenState extends State<BuyScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.search_rounded, size: 18, color: c.ash),
-                          const SizedBox(width: 10),
+                          Icon(Icons.search_rounded, size: context.isWide ? 22 : 18, color: c.ash),
+                          SizedBox(width: context.isWide ? 14 : 10),
                           Expanded(
                             child: TextField(
                               controller: searchController,
                               onChanged: (v) => setState(() => query = v),
-                              style: bodyStyle(size: 13.5, color: c.ink),
+                              style: bodyStyle(size: context.isWide ? 16 : 13.5, color: c.ink),
                               decoration: InputDecoration(
                                 isDense: true,
                                 border: InputBorder.none,
                                 hintText: 'Search make, model or city',
-                                hintStyle: bodyStyle(size: 13.5, color: c.ash),
+                                hintStyle: bodyStyle(size: context.isWide ? 16 : 13.5, color: c.ash),
                               ),
                             ),
                           ),
@@ -101,6 +102,7 @@ class _BuyScreenState extends State<BuyScreen> {
                     icon: Icons.tune_rounded,
                     borderColor: c.red,
                     iconColor: c.red,
+                    size: context.isWide ? 54 : 38,
                     onTap: _openFilters,
                   ),
                 ],
