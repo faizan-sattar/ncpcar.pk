@@ -119,6 +119,11 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         _FilterDropdownChip(
+                          label: labelForBucket(kPriceBuckets, filters.priceLacRange),
+                          options: kPriceBuckets.keys.toList(),
+                          onSelected: (v) => apply(filters.copyWith(priceLacRange: kPriceBuckets[v])),
+                        ),
+                        _FilterDropdownChip(
                           label: filters.city == kAllCities ? 'City' : filters.city,
                           options: kCityOptions,
                           onSelected: (v) => apply(filters.copyWith(city: v)),
@@ -129,9 +134,29 @@ class HomeScreen extends StatelessWidget {
                           onSelected: (v) => apply(filters.copyWith(bodyType: v)),
                         ),
                         _FilterDropdownChip(
+                          label: labelForBucket(kYearBuckets, filters.yearRange),
+                          options: kYearBuckets.keys.toList(),
+                          onSelected: (v) => apply(filters.copyWith(yearRange: kYearBuckets[v])),
+                        ),
+                        _FilterDropdownChip(
+                          label: labelForBucket(kMileageBuckets, filters.mileageKmRange),
+                          options: kMileageBuckets.keys.toList(),
+                          onSelected: (v) => apply(filters.copyWith(mileageKmRange: kMileageBuckets[v])),
+                        ),
+                        _FilterDropdownChip(
                           label: filters.transmission == kAllTransmissions ? 'Transmission' : filters.transmission,
                           options: kTransmissionOptions,
                           onSelected: (v) => apply(filters.copyWith(transmission: v)),
+                        ),
+                        _FilterDropdownChip(
+                          label: filters.fuelType == kAllFuelTypes ? 'Fuel type' : filters.fuelType,
+                          options: kFuelTypeOptions,
+                          onSelected: (v) => apply(filters.copyWith(fuelType: v)),
+                        ),
+                        _FilterDropdownChip(
+                          label: filters.owner == kAllOwners ? 'Owners' : filters.owner,
+                          options: kOwnerOptions,
+                          onSelected: (v) => apply(filters.copyWith(owner: v)),
                         ),
                         AppChip(
                           label: 'Verified only',
@@ -142,20 +167,6 @@ class HomeScreen extends StatelessWidget {
                           label: 'Dealer only',
                           active: filters.dealerOnly,
                           onTap: () => apply(filters.copyWith(dealerOnly: !filters.dealerOnly)),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            final result = await openFiltersPanel(context, activeFilters.value);
-                            if (result != null) apply(result);
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.tune_rounded, size: 16, color: c.red),
-                              const SizedBox(width: 4),
-                              Text('More filters', style: bodyStyle(size: 12.5, weight: 800, color: c.red)),
-                            ],
-                          ),
                         ),
                       ],
                     ),
@@ -201,7 +212,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          _QuickFilterBar(onGoToTab: onGoToTab),
+          if (!context.isWide) _QuickFilterBar(onGoToTab: onGoToTab),
           SectionHeader(title: 'Browse by body type'),
           SizedBox(
             height: 42,

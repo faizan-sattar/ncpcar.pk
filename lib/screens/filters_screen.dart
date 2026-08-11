@@ -23,6 +23,37 @@ const kMaxYearD = 2026.0;
 const kMinMileage = 0.0;
 const kMaxMileage = 100000.0;
 
+/// Preset range buckets for the quick-filter chips — lets price/year/mileage
+/// be picked from a horizontal dropdown chip instead of a slider.
+const kPriceBuckets = <String, RangeValues>{
+  'Price': RangeValues(kMinPriceLac, kMaxPriceLac),
+  'Under 30 lac': RangeValues(kMinPriceLac, 30),
+  '30–60 lac': RangeValues(30, 60),
+  '60–100 lac': RangeValues(60, 100),
+  '100+ lac': RangeValues(100, kMaxPriceLac),
+};
+const kYearBuckets = <String, RangeValues>{
+  'Year': RangeValues(kMinYearD, kMaxYearD),
+  '2005–2015': RangeValues(2005, 2015),
+  '2016–2020': RangeValues(2016, 2020),
+  '2021–2026': RangeValues(2021, kMaxYearD),
+};
+const kMileageBuckets = <String, RangeValues>{
+  'Mileage': RangeValues(kMinMileage, kMaxMileage),
+  'Under 20,000 km': RangeValues(kMinMileage, 20000),
+  '20,000–50,000 km': RangeValues(20000, 50000),
+  '50,000+ km': RangeValues(50000, kMaxMileage),
+};
+
+/// The bucket label matching a range value, for showing the current
+/// selection on a quick-filter chip; falls back to the placeholder label.
+String labelForBucket(Map<String, RangeValues> buckets, RangeValues value) {
+  for (final entry in buckets.entries) {
+    if (entry.value == value) return entry.key;
+  }
+  return buckets.keys.first;
+}
+
 /// Filter criteria applied to the listings feed on the Buy screen.
 class CarFilters {
   final RangeValues priceLacRange;
