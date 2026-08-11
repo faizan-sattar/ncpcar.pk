@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../auth/require_signed_in.dart';
 import '../theme/app_theme.dart';
+import '../theme/responsive.dart';
 import '../widgets/common.dart';
 
 class DemandScreen extends StatefulWidget {
@@ -18,7 +19,9 @@ class _DemandScreenState extends State<DemandScreen> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return SafeArea(
-      child: ListView(
+      child: ResponsiveContent(
+        maxWidth: 640,
+        child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         children: [
           Text('Request a car', style: bodyStyle(size: 18, weight: 800, color: c.ink)),
@@ -105,6 +108,7 @@ class _DemandScreenState extends State<DemandScreen> {
             },
           ),
         ],
+        ),
       ),
     );
   }
