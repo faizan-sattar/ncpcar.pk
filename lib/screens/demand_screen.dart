@@ -18,98 +18,166 @@ class _DemandScreenState extends State<DemandScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final form = ListView(padding: EdgeInsets.zero, children: _formFields(context, c));
+
     return SafeArea(
-      child: ResponsiveContent(
-        maxWidth: 640,
-        alignment: Alignment.topLeft,
-        child: ListView(
+      child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        children: [
-          Text('Request a car', style: bodyStyle(size: 18, weight: 800, color: c.ink)),
-          const SizedBox(height: 8),
-          Text(
-            "Can't find the exact car you want? Tell us your requirements and we'll alert matching verified sellers.",
-            style: bodyStyle(size: 13, color: c.inkSoft, height: 1.4),
-          ),
-          const SizedBox(height: 18),
-          Row(
-            children: [
-              Expanded(child: _Field(label: 'Preferred make', hint: 'e.g. Honda')),
-              const SizedBox(width: 10),
-              Expanded(child: _Field(label: 'Model', hint: 'e.g. Civic')),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(child: _Field(label: 'Budget range (PKR)', hint: '40 lac – 60 lac', mono: true)),
-              const SizedBox(width: 10),
-              Expanded(child: _Field(label: 'City', value: 'Gilgit')),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text('CONDITION PREFERENCE', style: eyebrowStyle(c.ash)),
-          const SizedBox(height: 10),
-          GridView.builder(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, mainAxisExtent: 46, crossAxisSpacing: 10, mainAxisSpacing: 10),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: conditions.length,
-            itemBuilder: (_, i) {
-              final cond = conditions[i];
-              final active = cond == condition;
-              return GestureDetector(
-                onTap: () => setState(() => condition = cond),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: active ? c.redTint : c.surface2,
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                    border: Border.all(color: active ? c.red : Colors.transparent, width: 1.4),
-                  ),
-                  child: Text(cond, textAlign: TextAlign.center, style: bodyStyle(size: 12, weight: 700, color: active ? c.redStrong : c.inkSoft)),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 14),
-          _Field(label: 'Your mobile number', value: '+92 300 1234567', mono: true),
-          const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: c.surface,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              border: Border.all(color: c.ashSoft),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.shield_outlined, size: 22, color: c.verified),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text("We'll notify you the moment a verified match is listed — usually within days.",
-                      style: bodyStyle(size: 12, color: c.inkSoft)),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 18),
-          PrimaryButton(
-            label: 'Submit request',
-            onTap: () async {
-              if (!await ensureSignedIn(context)) return;
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Request submitted — we'll be in touch soon", style: bodyStyle(size: 13, weight: 700, color: c.paper)),
-                  backgroundColor: c.ink,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-                ),
-              );
-            },
-          ),
-        ],
+        child: context.isWide
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: form),
+                  const SizedBox(width: 32),
+                  const Expanded(flex: 2, child: _DemandInfoPanel()),
+                ],
+              )
+            : form,
+      ),
+    );
+  }
+
+  List<Widget> _formFields(BuildContext context, AppColors c) => [
+        Text('Request a car', style: bodyStyle(size: 18, weight: 800, color: c.ink)),
+        const SizedBox(height: 8),
+        Text(
+          "Can't find the exact car you want? Tell us your requirements and we'll alert matching verified sellers.",
+          style: bodyStyle(size: 13, color: c.inkSoft, height: 1.4),
         ),
+        const SizedBox(height: 18),
+        Row(
+          children: [
+            Expanded(child: _Field(label: 'Preferred make', hint: 'e.g. Honda')),
+            const SizedBox(width: 10),
+            Expanded(child: _Field(label: 'Model', hint: 'e.g. Civic')),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(child: _Field(label: 'Budget range (PKR)', hint: '40 lac – 60 lac', mono: true)),
+            const SizedBox(width: 10),
+            Expanded(child: _Field(label: 'City', value: 'Gilgit')),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text('CONDITION PREFERENCE', style: eyebrowStyle(c.ash)),
+        const SizedBox(height: 10),
+        GridView.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, mainAxisExtent: 46, crossAxisSpacing: 10, mainAxisSpacing: 10),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: conditions.length,
+          itemBuilder: (_, i) {
+            final cond = conditions[i];
+            final active = cond == condition;
+            return GestureDetector(
+              onTap: () => setState(() => condition = cond),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: active ? c.redTint : c.surface2,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  border: Border.all(color: active ? c.red : Colors.transparent, width: 1.4),
+                ),
+                child: Text(cond, textAlign: TextAlign.center, style: bodyStyle(size: 12, weight: 700, color: active ? c.redStrong : c.inkSoft)),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 14),
+        _Field(label: 'Your mobile number', value: '+92 300 1234567', mono: true),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(color: c.ashSoft),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.shield_outlined, size: 22, color: c.verified),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text("We'll notify you the moment a verified match is listed — usually within days.",
+                    style: bodyStyle(size: 12, color: c.inkSoft)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 18),
+        PrimaryButton(
+          label: 'Submit request',
+          onTap: () async {
+            if (!await ensureSignedIn(context)) return;
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Request submitted — we'll be in touch soon", style: bodyStyle(size: 13, weight: 700, color: c.paper)),
+                backgroundColor: c.ink,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+              ),
+            );
+          },
+        ),
+      ];
+}
+
+class _DemandInfoPanel extends StatelessWidget {
+  const _DemandInfoPanel();
+
+  static const _points = [
+    (Icons.verified_outlined, 'Verified sellers only', 'Every match comes from an inspection-verified listing or dealer.'),
+    (Icons.bolt_outlined, 'Fast matching', "We alert matching sellers the moment they list — usually within days."),
+    (Icons.block_flipped, 'No spam calls', "Sellers reach out through the app — your number stays private until you reply."),
+    (Icons.savings_outlined, 'Free to use', 'Requesting a car costs nothing — pay nothing until you buy.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: c.ashSoft),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Why request with ValleyWheels?', style: bodyStyle(size: 15, weight: 800, color: c.ink)),
+          const SizedBox(height: 4),
+          Text('Skip the endless scrolling — tell us what you want once.', style: bodyStyle(size: 12, color: c.inkSoft)),
+          const SizedBox(height: 20),
+          for (final (icon, title, subtitle) in _points)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(color: c.redTint, shape: BoxShape.circle),
+                    child: Icon(icon, size: 17, color: c.red),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title, style: bodyStyle(size: 13, weight: 800, color: c.ink)),
+                        const SizedBox(height: 2),
+                        Text(subtitle, style: bodyStyle(size: 11.5, color: c.inkSoft, height: 1.35)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
