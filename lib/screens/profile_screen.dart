@@ -89,20 +89,17 @@ class ProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                   child: Row(
                     children: [
-                      Expanded(
-                        child: GhostButton(
-                          label: 'Sign in',
-                          onTap: () => Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signIn))),
-                        ),
+                      GhostButton(
+                        label: 'Sign in',
+                        onTap: () => Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signIn))),
                       ),
                       const SizedBox(width: 10),
-                      Expanded(
-                        child: PrimaryButton(
-                          label: 'Sign up',
-                          onTap: () => Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signUp))),
-                        ),
+                      PrimaryButton(
+                        label: 'Sign up',
+                        block: false,
+                        onTap: () => Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signUp))),
                       ),
                     ],
                   ),
