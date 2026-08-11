@@ -3,6 +3,7 @@ import '../auth/auth_controller.dart';
 import '../models/car_listing.dart';
 import '../theme/app_theme.dart';
 import '../theme/responsive.dart';
+import '../widgets/car_plate.dart';
 import '../widgets/common.dart';
 import '../widgets/listing_card.dart';
 import 'car_details_screen.dart';
@@ -212,6 +213,8 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
+          _LatestListingHero(onOpenDetails: _openDetails),
+          const _TrustStrip(),
           if (!context.isWide) _QuickFilterBar(onGoToTab: onGoToTab),
           SectionHeader(title: 'Browse by body type'),
           SizedBox(
@@ -345,6 +348,162 @@ class _FilterDropdownChip extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _LatestListingHero extends StatelessWidget {
+  final void Function(BuildContext, CarListing) onOpenDetails;
+  const _LatestListingHero({required this.onOpenDetails});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<List<CarListing>>(
+      valueListenable: listingsStore,
+      builder: (context, listings, _) {
+        if (listings.isEmpty) return const SizedBox.shrink();
+        final car = listings.first;
+        final plate = plateFor(car.plateIndex);
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+          child: GestureDetector(
+            onTap: () => onOpenDetails(context, car),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              child: SizedBox(
+                height: 260,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CarPlate(plateA: plate.a, plateB: plate.b, glyphColor: plate.glyph, radius: BorderRadius.zero),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, Colors.black.withValues(alpha: 0.8)],
+                          stops: const [0.35, 1],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 24,
+                      right: 24,
+                      bottom: 22,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.bolt_rounded, size: 13, color: Color(0xFFDC2626)),
+                                const SizedBox(width: 3),
+                                Text('LATEST LISTING', style: eyebrowStyle(const Color(0xFFDC2626))),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(car.title, style: displayStyle(size: 28, color: Colors.white)),
+                          const SizedBox(height: 4),
+                          Text(car.specLineWithCity, style: monoStyle(size: 12.5, color: Colors.white70)),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Text(car.price, style: displayStyle(size: 22, color: Colors.white)),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
+                                child: Text('View details', style: bodyStyle(size: 12.5, weight: 800, color: Colors.black)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _TrustStrip extends StatelessWidget {
+  const _TrustStrip();
+
+  static const _items = [
+    (Icons.verified_user_outlined, 'Verified listings', 'Every car inspection-checked before it goes live.'),
+    (Icons.storefront_outlined, 'Trusted dealers', 'Buy from rated dealers or private sellers — your choice.'),
+    (Icons.support_agent_outlined, 'Direct support', 'Chat or call sellers directly, any time.'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final items = _items
+        .map((item) => _TrustItem(icon: item.$1, title: item.$2, subtitle: item.$3))
+        .toList();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 22, 20, 4),
+      child: context.isWide
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < items.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 20),
+                  Expanded(child: items[i]),
+                ],
+              ],
+            )
+          : Column(
+              children: [
+                for (var i = 0; i < items.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 14),
+                  items[i],
+                ],
+              ],
+            ),
+    );
+  }
+}
+
+class _TrustItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  const _TrustItem({required this.icon, required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: c.redTint, shape: BoxShape.circle),
+          child: Icon(icon, size: 20, color: c.red),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: bodyStyle(size: 13.5, weight: 800, color: c.ink)),
+              const SizedBox(height: 2),
+              Text(subtitle, style: bodyStyle(size: 11.5, color: c.ash, height: 1.35)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
