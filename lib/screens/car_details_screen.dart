@@ -158,13 +158,15 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
                     ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
-                    child: GridView.count(
-                      crossAxisCount: 3,
+                    child: GridView(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: 1.55,
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 220,
+                        mainAxisExtent: 62,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                      ),
                       children: [
                         SpecItem(label: 'Year', value: '${car.year}', mono: true),
                         SpecItem(label: 'Mileage', value: car.mileageLabel, mono: true),
