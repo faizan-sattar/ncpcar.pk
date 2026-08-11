@@ -28,153 +28,79 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
+    final header = Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      child: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-            child: Row(
+          Container(
+            width: 64,
+            height: 64,
+            clipBehavior: Clip.antiAlias,
+            decoration: const BoxDecoration(shape: BoxShape.circle),
+            child: Image.asset('assets/images/logo_circle.png', fit: BoxFit.cover),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 64,
-                  height: 64,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: Image.asset('assets/images/logo_circle.png', fit: BoxFit.cover),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('LOCATION', style: eyebrowStyle(c.ash)),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              'Gilgit, Gilgit-Baltistan',
-                              style: bodyStyle(size: 15, weight: 800, color: c.ink),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Icon(Icons.expand_more_rounded, size: 18, color: c.ink),
-                        ],
+                Text('LOCATION', style: eyebrowStyle(c.ash)),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Gilgit, Gilgit-Baltistan',
+                        style: bodyStyle(size: 15, weight: 800, color: c.ink),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ValueListenableBuilder<String?>(
-                  valueListenable: authController,
-                  builder: (context, email, _) {
-                    if (email != null) {
-                      return Row(
-                        children: [
-                          IconCircleButton(icon: Icons.notifications_none_rounded, onTap: () {}),
-                          const SizedBox(width: 10),
-                          IconCircleButton(icon: Icons.person_outline_rounded, onTap: () => onGoToTab(4)),
-                        ],
-                      );
-                    }
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _HeaderAuthButton(
-                          label: 'Sign in',
-                          filled: false,
-                          onTap: () => Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signIn))),
-                        ),
-                        const SizedBox(width: 8),
-                        _HeaderAuthButton(
-                          label: 'Sign up',
-                          filled: true,
-                          onTap: () => Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signUp))),
-                        ),
-                      ],
-                    );
-                  },
+                    ),
+                    Icon(Icons.expand_more_rounded, size: 18, color: c.ink),
+                  ],
                 ),
               ],
             ),
           ),
-          if (context.isWide)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-              child: ValueListenableBuilder<CarFilters>(
-                valueListenable: activeFilters,
-                builder: (context, filters, _) {
-                  void apply(CarFilters next) {
-                    activeFilters.value = next;
-                    onGoToTab(1);
-                  }
+          const SizedBox(width: 10),
+          ValueListenableBuilder<String?>(
+            valueListenable: authController,
+            builder: (context, email, _) {
+              if (email != null) {
+                return Row(
+                  children: [
+                    IconCircleButton(icon: Icons.notifications_none_rounded, onTap: () {}),
+                    const SizedBox(width: 10),
+                    IconCircleButton(icon: Icons.person_outline_rounded, onTap: () => onGoToTab(4)),
+                  ],
+                );
+              }
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _HeaderAuthButton(
+                    label: 'Sign in',
+                    filled: false,
+                    onTap: () => Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signIn))),
+                  ),
+                  const SizedBox(width: 8),
+                  _HeaderAuthButton(
+                    label: 'Sign up',
+                    filled: true,
+                    onTap: () => Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => const LoginScreen(initialMode: AuthMode.signUp))),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
 
-                  return Align(
-                    alignment: Alignment.centerRight,
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        _FilterDropdownChip(
-                          label: labelForBucket(kPriceBuckets, filters.priceLacRange),
-                          options: kPriceBuckets.keys.toList(),
-                          onSelected: (v) => apply(filters.copyWith(priceLacRange: kPriceBuckets[v])),
-                        ),
-                        _FilterDropdownChip(
-                          label: filters.city == kAllCities ? 'City' : filters.city,
-                          options: kCityOptions,
-                          onSelected: (v) => apply(filters.copyWith(city: v)),
-                        ),
-                        _FilterDropdownChip(
-                          label: filters.bodyType == kAllBodyTypes ? 'Body type' : filters.bodyType,
-                          options: kBodyTypeOptions,
-                          onSelected: (v) => apply(filters.copyWith(bodyType: v)),
-                        ),
-                        _FilterDropdownChip(
-                          label: labelForBucket(kYearBuckets, filters.yearRange),
-                          options: kYearBuckets.keys.toList(),
-                          onSelected: (v) => apply(filters.copyWith(yearRange: kYearBuckets[v])),
-                        ),
-                        _FilterDropdownChip(
-                          label: labelForBucket(kMileageBuckets, filters.mileageKmRange),
-                          options: kMileageBuckets.keys.toList(),
-                          onSelected: (v) => apply(filters.copyWith(mileageKmRange: kMileageBuckets[v])),
-                        ),
-                        _FilterDropdownChip(
-                          label: filters.transmission == kAllTransmissions ? 'Transmission' : filters.transmission,
-                          options: kTransmissionOptions,
-                          onSelected: (v) => apply(filters.copyWith(transmission: v)),
-                        ),
-                        _FilterDropdownChip(
-                          label: filters.fuelType == kAllFuelTypes ? 'Fuel type' : filters.fuelType,
-                          options: kFuelTypeOptions,
-                          onSelected: (v) => apply(filters.copyWith(fuelType: v)),
-                        ),
-                        _FilterDropdownChip(
-                          label: filters.owner == kAllOwners ? 'Owners' : filters.owner,
-                          options: kOwnerOptions,
-                          onSelected: (v) => apply(filters.copyWith(owner: v)),
-                        ),
-                        AppChip(
-                          label: 'Verified only',
-                          active: filters.verifiedOnly,
-                          onTap: () => apply(filters.copyWith(verifiedOnly: !filters.verifiedOnly)),
-                        ),
-                        AppChip(
-                          label: 'Dealer only',
-                          active: filters.dealerOnly,
-                          onTap: () => apply(filters.copyWith(dealerOnly: !filters.dealerOnly)),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+    final content = ListView(
+      padding: const EdgeInsets.only(top: 12, bottom: 24),
+      children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
             child: GestureDetector(
@@ -314,39 +240,260 @@ class HomeScreen extends StatelessWidget {
               style: bodyStyle(size: 11, color: c.ash),
             ),
           ),
+      ],
+    );
+
+    return SafeArea(
+      child: Column(
+        children: [
+          header,
+          Expanded(
+            child: context.isWide
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: content),
+                      _HomeFilterSidebar(onGoToTab: onGoToTab),
+                    ],
+                  )
+                : content,
+          ),
         ],
       ),
     );
   }
 }
 
-class _FilterDropdownChip extends StatelessWidget {
-  final String label;
-  final List<String> options;
-  final ValueChanged<String> onSelected;
-  const _FilterDropdownChip({required this.label, required this.options, required this.onSelected});
+class _HomeFilterSidebar extends StatefulWidget {
+  final ValueChanged<int> onGoToTab;
+  const _HomeFilterSidebar({required this.onGoToTab});
+
+  @override
+  State<_HomeFilterSidebar> createState() => _HomeFilterSidebarState();
+}
+
+class _HomeFilterSidebarState extends State<_HomeFilterSidebar> {
+  late CarFilters filters = activeFilters.value;
+
+  int get _matchCount => listingsStore.value.where(filters.matches).length;
+
+  void _set(CarFilters next) {
+    setState(() => filters = next);
+    activeFilters.value = next;
+  }
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return PopupMenuButton<String>(
-      onSelected: onSelected,
-      itemBuilder: (context) => options.map((o) => PopupMenuItem(value: o, child: Text(o))).toList(),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-        decoration: BoxDecoration(
-          color: c.surface2,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: c.ashSoft),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(label, style: bodyStyle(size: 12.5, weight: 700, color: c.ink)),
-            const SizedBox(width: 4),
-            Icon(Icons.expand_more_rounded, size: 16, color: c.ash),
-          ],
-        ),
+    return Container(
+      width: 300,
+      margin: const EdgeInsets.fromLTRB(0, 0, 20, 24),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: c.ashSoft),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Filter cars', style: bodyStyle(size: 15, weight: 800, color: c.ink)),
+              Icon(Icons.tune_rounded, size: 18, color: c.red),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('PRICE RANGE (LAC)', style: eyebrowStyle(c.ash)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${filters.priceLacRange.start.round()}', style: monoStyle(size: 12.5, weight: 700, color: c.red)),
+                        Text('${filters.priceLacRange.end.round()}', style: monoStyle(size: 12.5, weight: 700, color: c.red)),
+                      ],
+                    ),
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: c.red,
+                      inactiveTrackColor: c.ashSoft,
+                      thumbColor: c.red,
+                      overlayColor: c.red.withValues(alpha: 0.15),
+                      trackHeight: 3,
+                    ),
+                    child: RangeSlider(
+                      values: filters.priceLacRange,
+                      min: kMinPriceLac,
+                      max: kMaxPriceLac,
+                      onChanged: (v) => _set(filters.copyWith(priceLacRange: v)),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text('CITY', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: kCityOptions
+                        .map((ct) => AppChip(label: ct, active: ct == filters.city, onTap: () => _set(filters.copyWith(city: ct))))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 14),
+                  Text('BODY TYPE', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: kBodyTypeOptions
+                        .map((bt) => AppChip(label: bt, active: bt == filters.bodyType, onTap: () => _set(filters.copyWith(bodyType: bt))))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 14),
+                  Text('YEAR', style: eyebrowStyle(c.ash)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${filters.yearRange.start.round()}', style: monoStyle(size: 12.5, weight: 700, color: c.red)),
+                        Text('${filters.yearRange.end.round()}', style: monoStyle(size: 12.5, weight: 700, color: c.red)),
+                      ],
+                    ),
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: c.red,
+                      inactiveTrackColor: c.ashSoft,
+                      thumbColor: c.red,
+                      overlayColor: c.red.withValues(alpha: 0.15),
+                      trackHeight: 3,
+                    ),
+                    child: RangeSlider(
+                      values: filters.yearRange,
+                      min: kMinYearD,
+                      max: kMaxYearD,
+                      divisions: kMaxYear - kMinYear,
+                      onChanged: (v) => _set(filters.copyWith(yearRange: v)),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text('MILEAGE (KM)', style: eyebrowStyle(c.ash)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${filters.mileageKmRange.start.round()}', style: monoStyle(size: 12.5, weight: 700, color: c.red)),
+                        Text('${filters.mileageKmRange.end.round()}', style: monoStyle(size: 12.5, weight: 700, color: c.red)),
+                      ],
+                    ),
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: c.red,
+                      inactiveTrackColor: c.ashSoft,
+                      thumbColor: c.red,
+                      overlayColor: c.red.withValues(alpha: 0.15),
+                      trackHeight: 3,
+                    ),
+                    child: RangeSlider(
+                      values: filters.mileageKmRange,
+                      min: kMinMileage,
+                      max: kMaxMileage,
+                      onChanged: (v) => _set(filters.copyWith(mileageKmRange: v)),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text('TRANSMISSION', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: kTransmissionOptions
+                        .map((t) => AppChip(label: t, active: t == filters.transmission, onTap: () => _set(filters.copyWith(transmission: t))))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 14),
+                  Text('FUEL TYPE', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: kFuelTypeOptions
+                        .map((f) => AppChip(label: f, active: f == filters.fuelType, onTap: () => _set(filters.copyWith(fuelType: f))))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 14),
+                  Text('OWNERS', style: eyebrowStyle(c.ash)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: kOwnerOptions
+                        .map((o) => AppChip(label: o, active: o == filters.owner, onTap: () => _set(filters.copyWith(owner: o))))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 14),
+                  _ToggleRow(
+                    label: 'Verified only',
+                    value: filters.verifiedOnly,
+                    onChanged: (v) => _set(filters.copyWith(verifiedOnly: v)),
+                  ),
+                  _ToggleRow(
+                    label: 'Dealer only',
+                    value: filters.dealerOnly,
+                    onChanged: (v) => _set(filters.copyWith(dealerOnly: v)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              GhostButton(label: 'Reset', onTap: () => _set(const CarFilters())),
+              const SizedBox(width: 10),
+              Expanded(
+                child: PrimaryButton(
+                  label: 'Show $_matchCount cars',
+                  onTap: () {
+                    activeFilters.value = filters;
+                    widget.onGoToTab(1);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ToggleRow extends StatelessWidget {
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  const _ToggleRow({required this.label, required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: bodyStyle(size: 12.5, weight: 700, color: c.ink))),
+          AppSwitch(value: value, onChanged: onChanged),
+        ],
       ),
     );
   }
