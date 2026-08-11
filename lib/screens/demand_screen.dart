@@ -21,6 +21,7 @@ class _DemandScreenState extends State<DemandScreen> {
     return SafeArea(
       child: ResponsiveContent(
         maxWidth: 640,
+        alignment: Alignment.topLeft,
         child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         children: [

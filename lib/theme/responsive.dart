@@ -23,13 +23,14 @@ extension ResponsiveContext on BuildContext {
 class ResponsiveContent extends StatelessWidget {
   final Widget child;
   final double maxWidth;
-  const ResponsiveContent({super.key, required this.child, this.maxWidth = 1100});
+  final AlignmentGeometry alignment;
+  const ResponsiveContent({super.key, required this.child, this.maxWidth = 1100, this.alignment = Alignment.topCenter});
 
   @override
   Widget build(BuildContext context) {
     if (!context.isWide) return child;
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: alignment,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: child,
